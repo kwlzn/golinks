@@ -42,15 +42,11 @@ async def redirect_to_url(path: str, request: Request, db: Session = Depends(get
     if path.startswith('_') or path.startswith('static/') or path.startswith('api/'):
         raise HTTPException(status_code=404, detail="Link not found")
     
-    # Get the full path for the slug (preserving forward slashes)
     slug = path
-
-    # For debug purposes
-    print(f"Looking up slug: {slug}")
-    
     link = db.query(Link).filter(Link.slug == slug).first()
     if not link:
         raise HTTPException(status_code=404, detail="Link not found")
+
     return RedirectResponse(url=link.url, status_code=302)
 
 if __name__ == "__main__":

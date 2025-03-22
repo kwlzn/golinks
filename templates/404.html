@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoLink Not Found</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f7f9fc;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 40px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        p {
+            font-size: 1.2rem;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .action-button, .submit-btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            padding: 14px 14px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.2);
+            border: none;
+            cursor: pointer;
+        }
+        .action-button:hover, .submit-btn:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.3);
+        }
+        .editable-slug {
+            font-family: monospace;
+            font-weight: bold;
+            background-color: #f2f2f2;
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 2px dashed #ccc;
+            display: inline-block;
+            min-width: 50px;
+            cursor: text;
+            transition: all 0.2s;
+        }
+        .editable-slug:hover, .editable-slug:focus {
+            background-color: #fff;
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .create-form {
+            margin-top: 25px;
+            background-color: #f7f9fc;
+            padding: 25px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .form-row {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .input-group {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            height: 45px;
+        }
+        input[type="url"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+        input[type="text"] {
+            width: 70%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+        input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+        .submit-btn {
+            margin-left: 10px;
+        }
+        .or-divider {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+        }
+        .or-divider:before, .or-divider:after {
+            content: "";
+            flex-grow: 1;
+            height: 1px;
+            background-color: #ddd;
+        }
+        .or-divider span {
+            padding: 0 15px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        #error-message {
+            color: #f44336;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        .form-label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>404: Link Not Found</h1>
+        <p>The link <span id="slug-display" class="editable-slug" contenteditable="true">{{ slug }}</span> doesn't exist yet.</p>
+        
+        <div class="create-form">
+            <p>Create it now?</p>
+            <form id="quick-create-form">
+                <div class="form-row">
+                    <label for="url" class="form-label">Destination URL:</label>
+                    <input type="url" id="url" placeholder="Enter the URL this go link should redirect to" required>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <input type="text" id="username" placeholder="Your username" required>
+                        <button type="submit" class="submit-btn">Create Link</button>
+                    </div>
+                </div>
+                <div id="error-message"></div>
+            </form>
+        </div>
+        
+        <div class="or-divider">
+            <span>OR</span>
+        </div>
+        
+        <a href="/links" class="action-button">Manage All Links</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('quick-create-form');
+            const errorMessage = document.getElementById('error-message');
+            const slugDisplay = document.getElementById('slug-display');
+            const usernameInput = document.getElementById('username');
+            
+            // Restore username from cookie if available
+            const savedUsername = getCookie('golinks_username');
+            if (savedUsername) {
+                usernameInput.value = savedUsername;
+            }
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const slug = slugDisplay.textContent.trim();
+                const url = document.getElementById('url').value;
+                const username = usernameInput.value;
+                
+                // Validate slug
+                if (!/^[a-zA-Z0-9]/.test(slug)) {
+                    errorMessage.textContent = 'Slug must start with an alphanumeric character.';
+                    return;
+                }
+                
+                if (!/^[a-zA-Z0-9._\-/]+$/.test(slug)) {
+                    errorMessage.textContent = 'Slug can only contain alphanumeric characters, dots, underscores, hyphens, and forward slashes.';
+                    return;
+                }
+                
+                if (!url) {
+                    errorMessage.textContent = 'Please enter a destination URL';
+                    return;
+                }
+                
+                // URL validation - ensure it's a valid URL format
+                try {
+                    new URL(url);
+                } catch (e) {
+                    errorMessage.textContent = 'Please enter a valid URL (e.g., https://example.com)';
+                    return;
+                }
+                
+                if (!username) {
+                    errorMessage.textContent = 'Please enter your username';
+                    return;
+                }
+                
+                // Save username in a cookie (expires in 1 year)
+                setCookie('golinks_username', username, 365);
+                
+                // Create the link
+                fetch('/_api/links/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        slug: slug,
+                        url: url,
+                        username: username
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.detail || 'Failed to create link');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Store the created slug in sessionStorage to highlight it on the links page
+                    sessionStorage.setItem('newlyCreatedSlug', slug);
+                    // Redirect to the links management page
+                    window.location.href = '/links';
+                })
+                .catch(error => {
+                    errorMessage.textContent = error.message;
+                });
+            });
+            
+            // Helper function to set a cookie
+            function setCookie(name, value, days) {
+                let expires = "";
+                if (days) {
+                    const date = new Date();
+                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                    expires = "; expires=" + date.toUTCString();
+                }
+                document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+            }
+            
+            // Helper function to get a cookie value
+            function getCookie(name) {
+                const nameEQ = name + "=";
+                const ca = document.cookie.split(';');
+                for(let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+                }
+                return null;
+            }
+        });
+    </script>
+</body>
+</html>

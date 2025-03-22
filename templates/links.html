@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links Manager</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="url"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .delete-btn {
+            background-color: #f44336;
+        }
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+        .success-message {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        .slug-link {
+            color: #1976D2;
+            font-weight: bold;
+            text-decoration: none;
+            font-family: monospace;
+            padding: 2px 5px;
+            background-color: rgba(25, 118, 210, 0.1);
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+        .slug-link:hover {
+            background-color: rgba(25, 118, 210, 0.2);
+            text-decoration: underline;
+        }
+        .highlight-row {
+            background-color: #e8f5e9;
+            animation: flash 2s ease-in-out;
+        }
+        @keyframes flash {
+            0% { background-color: #4CAF50; }
+            100% { background-color: #e8f5e9; }
+        }
+        .search-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .search-input-group input {
+            flex-grow: 1;
+        }
+        #search-form {
+            margin-bottom: 30px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        #search-results-container {
+            margin-top: 15px;
+        }
+        .notification-container {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .link-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .link-property {
+            display: flex;
+            align-items: baseline;
+        }
+        .link-property strong {
+            width: 120px;
+            display: inline-block;
+        }
+        .link-action {
+            margin-top: 15px;
+        }
+        .info-text {
+            color: #666;
+            font-style: italic;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+        .collapsible-header {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            margin-bottom: 0;
+        }
+        .collapsible-header h2 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        .collapse-arrow {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 12px;
+            transition: transform 0.3s;
+        }
+        .collapse-arrow.expanded {
+            transform: rotate(90deg);
+        }
+        .collapsible-content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #eee;
+            border-top: none;
+            margin-top: -1px;
+            overflow: hidden;
+        }
+        #search-form {
+            margin-bottom: 30px;
+        }
+        .search-results-info {
+            margin: 10px 0 15px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
+        .results-count {
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .results-warning {
+            color: #e65100;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Links Manager</h1>
+    
+    <div id="success-message" class="success-message">
+        Link created successfully!
+    </div>
+    
+    <div id="create-form">
+        <h2>Create a New Link</h2>
+        <div class="form-group">
+            <label for="slug">Slug:</label>
+            <input type="text" id="slug" placeholder="e.g., docs">
+            <small style="display: block; margin-top: 5px; color: #666;">
+                Must start with a letter or number and can only contain letters, numbers, dots, underscores, hyphens, and forward slashes.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="url">URL:</label>
+            <input type="url" id="url" placeholder="e.g., https://example.com/documentation">
+        </div>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Your username">
+        </div>
+        <button id="create-btn">Create Link</button>
+        <div id="error-message" class="error"></div>
+    </div>
+    
+    <div id="existing-link-container" class="notification-container" style="display: none;">
+        <h3>This Link Already Exists</h3>
+        <div id="existing-link-details"></div>
+    </div>
+    
+    <div id="search-section">
+        <div class="collapsible-header">
+            <h2><span class="collapse-arrow">▶</span> Search Links</h2>
+        </div>
+        <div id="search-form" class="collapsible-content" style="display: none;">
+            <div id="search-input-section" class="form-group">
+                <label for="search-query">Search Query:</label>
+                <div class="search-input-group">
+                    <input type="text" id="search-query" placeholder="e.g., docs* or *meeting* (use * as wildcard)">
+                    <button id="search-btn">Search</button>
+                </div>
+                <small style="display: block; margin-top: 5px; color: #666;">
+                    Use * as a wildcard. For example, "docs*" will find all links starting with "docs".
+                </small>
+            </div>
+            <div id="search-results-container" style="display: none;">
+                <h3>Search Results</h3>
+                <table id="search-results-table">
+                    <thead>
+                        <tr>
+                            <th>Slug</th>
+                            <th>URL</th>
+                            <th>Created By</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="search-results-body">
+                        <!-- Search results will be populated here -->
+                    </tbody>
+                </table>
+                <div id="no-results-message" style="display: none; margin-top: 15px; color: #666; font-style: italic;">
+                    No matching links found.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="user-links-section" style="display: none;">
+        <h2>Your Links</h2>
+        <p class="info-text">Showing your 10 most recent links.</p>
+        <table id="links-table">
+            <thead>
+                <tr>
+                    <th>Slug</th>
+                    <th>URL</th>
+                    <th>Username</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="links-body">
+                <!-- User's links will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="/static/app.js"></script>
+    
+    <script>
+        // Check if we came from the 404 page with a newly created link
+        document.addEventListener('DOMContentLoaded', function() {
+            const usernameInput = document.getElementById('username');
+            
+            // Populate username from cookie if available
+            const savedUsername = getCookie('golinks_username');
+            if (savedUsername) {
+                usernameInput.value = savedUsername;
+            }
+            
+            // Set up the collapsible search section
+            const collapsibleHeader = document.querySelector('.collapsible-header');
+            const searchForm = document.getElementById('search-form');
+            const collapseArrow = document.querySelector('.collapse-arrow');
+            
+            collapsibleHeader.addEventListener('click', function() {
+                const isExpanded = searchForm.style.display !== 'none';
+                searchForm.style.display = isExpanded ? 'none' : 'block';
+                
+                // Toggle the arrow direction
+                if (isExpanded) {
+                    collapseArrow.classList.remove('expanded');
+                } else {
+                    collapseArrow.classList.add('expanded');
+                }
+            });
+            
+            // Handle highlighting newly created link
+            const newlyCreatedSlug = sessionStorage.getItem('newlyCreatedSlug');
+            if (newlyCreatedSlug) {
+                // Show success message
+                const successMessage = document.getElementById('success-message');
+                successMessage.style.display = 'block';
+                successMessage.innerHTML = `Link "<a href="/${newlyCreatedSlug}" target="_blank" class="slug-link">${newlyCreatedSlug}</a>" created successfully!`;
+                
+                // Wait for links to load, then highlight the new link
+                setTimeout(function() {
+                    // Make sure user links section is visible if we have a newly created link and username
+                    const userLinksSection = document.getElementById('user-links-section');
+                    const savedUsername = getCookie('golinks_username');
+                    if (savedUsername) {
+                        userLinksSection.style.display = 'block';
+                    }
+                    
+                    const rows = document.querySelectorAll('#links-body tr');
+                    rows.forEach(row => {
+                        const slugCell = row.querySelector('td:first-child');
+                        if (slugCell && slugCell.textContent.trim() === newlyCreatedSlug) {
+                            row.classList.add('highlight-row');
+                            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    });
+                    
+                    // Clear the stored slug
+                    sessionStorage.removeItem('newlyCreatedSlug');
+                }, 500); // Give time for the links to load
+            }
+        });
+        
+        // Cookie helper functions
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+        }
+        
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+    </script>
+</body>
+</html>

@@ -1,13 +1,17 @@
 # GoLinks
 
-A simple go links service for URL redirection.
+A dead simple go links service.
 
 ## Features
 
-- Create short, memorable links (e.g., `go/docs`) that redirect to longer URLs
-- Web interface to manage links
-- API endpoints for programmatic access
-- SQLite (development) or PostgreSQL (production) database for storage
+- Create short, memorable links (e.g., `go/docs`) that redirect to longer URLs.
+- Web interface to manage links.
+- API endpoints for programmatic access.
+- SQLite (development) or PostgreSQL (production) database for storage.
+
+## Caveats
+
+- No auth (use only in environments of high trust, like your startup).
 
 ## Setup
 
@@ -54,7 +58,8 @@ A simple go links service for URL redirection.
    make run-prod  # Uses PostgreSQL and has reload disabled
    ```
 
-4. Visit `http://localhost:8000/links` to manage your go links.
+4. Point the `go` DNS name for your search domain to this site.
+5. Visit `http://go/links` to manage your go links - then use e.g. `http://go/<slug>` to quickly get to links.
 
 ### Database Configuration
 
@@ -105,11 +110,3 @@ Slugs must follow these rules:
 - `POST /_api/links` - Create a new link
 - `GET /_api/links/{slug}` - Get a specific link
 - `DELETE /_api/links/{slug}` - Delete a link
-
-## Production Deployment
-
-For production deployment, consider:
-
-1. Setting up NGINX or Apache as a reverse proxy
-2. Using a more robust PostgreSQL setup
-3. Implementing proper authentication for managing links

@@ -59,20 +59,43 @@
             background-color: #f2f2f2;
         }
         /* Column widths */
-        th:nth-child(1), td:nth-child(1) { width: 20%; } /* Slug */
-        th:nth-child(2), td:nth-child(2) { width: 40%; } /* URL */
-        th:nth-child(3), td:nth-child(3) { width: 15%; } /* Username */
-        th:nth-child(4), td:nth-child(4) { width: 15%; } /* Created At */
+        th:nth-child(1), td:nth-child(1) { width: 17%; } /* Name */
+        th:nth-child(2), td:nth-child(2) { width: 38%; } /* URL */
+        th:nth-child(3), td:nth-child(3) { width: 14%; } /* Created By/Username */
+        th:nth-child(4), td:nth-child(4) { width: 21%; white-space: normal; } /* Created At */
         th:nth-child(5), td:nth-child(5) { width: 10%; } /* Actions */
+        
+        /* Make sure headers are fully visible */
+        th {
+            white-space: nowrap;
+            overflow: visible;
+        }
+        
+        /* Center the Actions header */
+        th:nth-child(5) {
+            text-align: center;
+        }
         .error {
             color: red;
             margin-top: 10px;
         }
         .delete-btn {
             background-color: #f44336;
+            padding: 8px 10px;
+            font-size: 16px;
         }
         .delete-btn:hover {
             background-color: #d32f2f;
+        }
+        
+        /* Make standalone delete button in table more compact and centered */
+        td:nth-child(5) {
+            text-align: center;
+        }
+        
+        td .delete-btn {
+            min-width: 0;
+            padding: 5px 8px;
         }
         .success-message {
             background-color: #e8f5e9;

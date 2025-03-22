@@ -45,9 +45,10 @@ async function loadLinks() {
         links.forEach(link => {
             const row = document.createElement('tr');
             
-            // Format the date
+            // Format the date in a more compact way
             const createdAt = new Date(link.created_at);
-            const formattedDate = createdAt.toLocaleDateString() + ' ' + createdAt.toLocaleTimeString();
+            // Use YYYY-MM-DD HH:MM format to save space
+            const formattedDate = createdAt.toISOString().replace('T', ' ').substring(0, 16);
             
             // Add dynamic link indicator if applicable
             const dynamicIndicator = link.is_dynamic ? 
@@ -62,7 +63,7 @@ async function loadLinks() {
                 <td>${link.username}</td>
                 <td>${formattedDate}</td>
                 <td>
-                    <button class="delete-btn" data-slug="${link.slug}">Delete</button>
+                    <button class="delete-btn" data-slug="${link.slug}" title="Delete this link">🗑️</button>
                 </td>
             `;
             
@@ -218,9 +219,10 @@ async function searchLinks() {
 function createLinkRow(link) {
     const row = document.createElement('tr');
     
-    // Format the date
+    // Format the date in a more compact way
     const createdAt = new Date(link.created_at);
-    const formattedDate = createdAt.toLocaleDateString() + ' ' + createdAt.toLocaleTimeString();
+    // Use YYYY-MM-DD HH:MM format to save space
+    const formattedDate = createdAt.toISOString().replace('T', ' ').substring(0, 16);
     
     // Add dynamic link indicator if applicable
     const dynamicIndicator = link.is_dynamic ? 
@@ -240,7 +242,7 @@ function createLinkRow(link) {
         <td>${link.username}</td>
         <td>${formattedDate}</td>
         <td>
-            <button class="delete-btn" data-slug="${link.slug}">Delete</button>
+            <button class="delete-btn" data-slug="${link.slug}" title="Delete this link">🗑️</button>
         </td>
     `;
     
@@ -376,7 +378,8 @@ async function createLink() {
 // Function to display existing link details
 function displayExistingLink(link) {
     const createdAt = new Date(link.created_at);
-    const formattedDate = createdAt.toLocaleDateString() + ' ' + createdAt.toLocaleTimeString();
+    // Use YYYY-MM-DD HH:MM format to save space
+    const formattedDate = createdAt.toISOString().replace('T', ' ').substring(0, 16);
     
     // Get dynamic link indicator if applicable
     const dynamicInfo = link.is_dynamic ? 
@@ -412,7 +415,7 @@ function displayExistingLink(link) {
             </div>
         </div>
         <div class="link-action">
-            <button class="delete-btn" id="existing-delete-btn" data-slug="${link.slug}">Delete This Link</button>
+            <button class="delete-btn" id="existing-delete-btn" data-slug="${link.slug}" title="Delete this link">🗑️ Delete Link</button>
         </div>
     `;
     

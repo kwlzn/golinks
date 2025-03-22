@@ -148,14 +148,19 @@ async function searchLinks() {
             resultsHeader.innerHTML = `
                 <div class="results-count">Found <strong>0</strong> matches.</div>
             `;
+            
+            // Hide the table when no results found
+            document.getElementById('search-results-table').style.display = 'none';
         } else {
+            // Make sure the table is visible
+            document.getElementById('search-results-table').style.display = 'table';
             // Show results info
             resultsHeader.style.display = 'block';
             
             // Create the info message
             if (total_count > 10) {
                 resultsHeader.innerHTML = `
-                    <div class="results-count">Found <strong>${total_count}</strong> matches. Showing the 10 most recent.</div>
+                    <div class="results-count">Found <strong>${total_count}</strong> matches. Showing only the 10 most recent.</div>
                     <div class="results-warning">Refine your search to see more specific results.</div>
                 `;
             } else {
@@ -392,6 +397,9 @@ function displayExistingLink(link) {
     // Make sure search results container is visible
     const searchResultsContainer = document.getElementById('search-results-container');
     searchResultsContainer.classList.add('visible');
+    
+    // Make sure the table is visible since we're showing an existing link
+    document.getElementById('search-results-table').style.display = 'table';
     
     // Clear any previous search results header
     const existingHeader = document.getElementById('search-results-header');

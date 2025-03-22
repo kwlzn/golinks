@@ -8,7 +8,6 @@ const linksBody = document.getElementById('links-body');
 const searchBtn = document.getElementById('search-btn');
 const searchQuery = document.getElementById('search-query');
 const searchResultsBody = document.getElementById('search-results-body');
-const noResultsMessage = document.getElementById('no-results-message');
 const existingLinkContainer = document.getElementById('existing-link-container');
 const existingLinkDetails = document.getElementById('existing-link-details');
 
@@ -131,9 +130,6 @@ async function searchLinks() {
         // Clear previous results
         searchResultsBody.innerHTML = '';
         
-        // Hide any previous message
-        noResultsMessage.classList.remove('visible');
-        
         // Get the results header element or create it if it doesn't exist
         let resultsHeader = document.getElementById('search-results-header');
         if (!resultsHeader) {
@@ -147,9 +143,6 @@ async function searchLinks() {
         }
         
         if (total_count === 0) {
-            // Show no results message
-            noResultsMessage.classList.add('visible');
-            
             // Show results header with 0 count
             resultsHeader.style.display = 'block';
             resultsHeader.innerHTML = `

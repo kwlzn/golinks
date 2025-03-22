@@ -209,12 +209,6 @@
             overflow: visible;
         }
         
-        .no-results.visible {
-            opacity: 1;
-            height: auto;
-            overflow: visible;
-            padding: 10px 0;
-        }
         .results-count {
             margin-bottom: 5px;
             font-weight: 500;
@@ -289,17 +283,14 @@
                             <!-- Search results will be populated here -->
                         </tbody>
                     </table>
-                    <div id="no-results-message" class="no-results" style="margin-top: 15px; color: #666; font-style: italic; opacity: 0; height: 0; overflow: hidden; transition: opacity 0.3s ease, height 0.3s ease;">
-                        Try a different search query to find links.
-                    </div>
                 </div>
             </div>
         </div>
     </div>
     
     <div id="user-links-section" style="display: none;">
-        <h2>Your Links</h2>
-        <p class="info-text">Showing your 10 most recent links.</p>
+        <h2>Your Links</h2> 
+        <p class="info-text">Top 10 most recently created links.</p>
         <table id="links-table">
             <thead>
                 <tr>

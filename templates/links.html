@@ -43,6 +43,8 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            border-radius: 4px;
+            overflow: hidden;
         }
         th, td {
             text-align: left;
@@ -140,45 +142,78 @@
             margin-top: -10px;
             margin-bottom: 15px;
         }
-        .collapsible-header {
-            cursor: pointer;
-            padding: 10px;
-            background-color: #f9f9f9;
+        /* Search Panel Styles */
+        #search-section {
+            margin: 25px 0;
             border-radius: 8px;
             border: 1px solid #eee;
-            margin-bottom: 0;
+            background-color: #f9f9f9;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         }
-        .collapsible-header h2 {
+        
+        .search-header {
+            cursor: pointer;
+            padding: 15px 20px;
             margin: 0;
             display: flex;
             align-items: center;
         }
+        
         .collapse-arrow {
             display: inline-block;
             margin-right: 10px;
-            font-size: 12px;
-            transition: transform 0.3s;
+            font-size: 14px;
+            transition: transform 0.3s ease;
         }
+        
         .collapse-arrow.expanded {
             transform: rotate(90deg);
         }
-        .collapsible-content {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 0 0 8px 8px;
-            border: 1px solid #eee;
-            border-top: none;
-            margin-top: -1px;
+        
+        .search-content {
+            max-height: 0;
             overflow: hidden;
+            transition: max-height 0.5s ease;
+            padding: 0 20px;
         }
+        
+        .search-content.expanded {
+            max-height: 2000px;
+            padding: 0 20px 20px;
+        }
+        
         #search-form {
-            margin-bottom: 30px;
+            margin-bottom: 0;
         }
+        
         .search-results-info {
-            margin: 10px 0 15px;
-            padding: 10px;
-            background-color: #f5f5f5;
+            margin: 15px 0;
+            padding: 10px 15px;
+            background-color: rgba(245, 245, 245, 0.6);
             border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        
+        #search-results-container {
+            margin-top: 20px;
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease, height 0.3s ease;
+        }
+        
+        #search-results-container.visible {
+            opacity: 1;
+            height: auto;
+            overflow: visible;
+        }
+        
+        .no-results.visible {
+            opacity: 1;
+            height: auto;
+            overflow: visible;
+            padding: 10px 0;
         }
         .results-count {
             margin-bottom: 5px;
@@ -225,38 +260,38 @@
     </div>
     
     <div id="search-section">
-        <div class="collapsible-header">
-            <h2><span class="collapse-arrow">▶</span> Search Links</h2>
-        </div>
-        <div id="search-form" class="collapsible-content" style="display: none;">
-            <div id="search-input-section" class="form-group">
-                <label for="search-query">Search Query:</label>
-                <div class="search-input-group">
-                    <input type="text" id="search-query" placeholder="e.g., docs* or *meeting* (use * as wildcard)">
-                    <button id="search-btn">Search</button>
+        <h2 class="search-header">
+            <span class="collapse-arrow">▶</span>
+            Search Links
+        </h2>
+        <div class="search-content">
+            <div id="search-form">
+                <div id="search-input-section" class="form-group">
+                    <label for="search-query">Search Query</label>
+                    <div class="search-input-group">
+                        <input type="text" id="search-query" placeholder="e.g., docs* or *meeting* (use * as wildcard)">
+                        <button id="search-btn">Search</button>
+                    </div>
                 </div>
-                <small style="display: block; margin-top: 5px; color: #666;">
-                    Use * as a wildcard. For example, "docs*" will find all links starting with "docs".
-                </small>
-            </div>
-            <div id="search-results-container" style="display: none;">
-                <h3>Search Results</h3>
-                <table id="search-results-table">
-                    <thead>
-                        <tr>
-                            <th>Slug</th>
-                            <th>URL</th>
-                            <th>Created By</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="search-results-body">
-                        <!-- Search results will be populated here -->
-                    </tbody>
-                </table>
-                <div id="no-results-message" style="display: none; margin-top: 15px; color: #666; font-style: italic;">
-                    No matching links found.
+                <div id="search-results-container">
+                    <h3>Search Results</h3>
+                    <table id="search-results-table">
+                        <thead>
+                            <tr>
+                                <th>Slug</th>
+                                <th>URL</th>
+                                <th>Created By</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="search-results-body">
+                            <!-- Search results will be populated here -->
+                        </tbody>
+                    </table>
+                    <div id="no-results-message" class="no-results" style="margin-top: 15px; color: #666; font-style: italic; opacity: 0; height: 0; overflow: hidden; transition: opacity 0.3s ease, height 0.3s ease;">
+                        No matching links found.
+                    </div>
                 </div>
             </div>
         </div>
@@ -295,18 +330,19 @@
             }
             
             // Set up the collapsible search section
-            const collapsibleHeader = document.querySelector('.collapsible-header');
-            const searchForm = document.getElementById('search-form');
+            const searchHeader = document.querySelector('.search-header');
+            const searchContent = document.querySelector('.search-content');
             const collapseArrow = document.querySelector('.collapse-arrow');
             
-            collapsibleHeader.addEventListener('click', function() {
-                const isExpanded = searchForm.style.display !== 'none';
-                searchForm.style.display = isExpanded ? 'none' : 'block';
+            searchHeader.addEventListener('click', function() {
+                const isExpanded = searchContent.classList.contains('expanded');
                 
-                // Toggle the arrow direction
+                // Toggle content visibility with smooth animation
                 if (isExpanded) {
+                    searchContent.classList.remove('expanded');
                     collapseArrow.classList.remove('expanded');
                 } else {
+                    searchContent.classList.add('expanded');
                     collapseArrow.classList.add('expanded');
                 }
             });

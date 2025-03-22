@@ -84,27 +84,30 @@ async function loadLinks() {
 async function searchLinks() {
     const query = searchQuery.value.trim();
     
-    // Ensure search form is visible when user performs a search
-    const searchForm = document.getElementById('search-form');
+    // Ensure search form is expanded when user performs a search
+    const searchContent = document.querySelector('.search-content');
     const collapseArrow = document.querySelector('.collapse-arrow');
-    if (searchForm.style.display === 'none') {
-        searchForm.style.display = 'block';
+    
+    if (!searchContent.classList.contains('expanded')) {
+        searchContent.classList.add('expanded');
         collapseArrow.classList.add('expanded');
     }
     
     if (!query) {
         // Hide the search results container
         const searchResultsContainer = document.getElementById('search-results-container');
-        searchResultsContainer.style.display = 'none';
+        searchResultsContainer.classList.remove('visible');
         
         // Clear any existing results
-        searchResultsBody.innerHTML = '';
-        
-        // Hide any existing results header
-        const resultsHeader = document.getElementById('search-results-header');
-        if (resultsHeader) {
-            resultsHeader.style.display = 'none';
-        }
+        setTimeout(() => {
+            searchResultsBody.innerHTML = '';
+            
+            // Hide any existing results header
+            const resultsHeader = document.getElementById('search-results-header');
+            if (resultsHeader) {
+                resultsHeader.style.display = 'none';
+            }
+        }, 300);
         
         return;
     }
@@ -112,7 +115,7 @@ async function searchLinks() {
     try {
         // Show the search results container
         const searchResultsContainer = document.getElementById('search-results-container');
-        searchResultsContainer.style.display = 'block';
+        searchResultsContainer.classList.add('visible');
         
         // Encode the query to handle special characters
         const encodedQuery = encodeURIComponent(query);
@@ -129,7 +132,7 @@ async function searchLinks() {
         searchResultsBody.innerHTML = '';
         
         // Hide any previous message
-        noResultsMessage.style.display = 'none';
+        noResultsMessage.classList.remove('visible');
         
         // Get the results header element or create it if it doesn't exist
         let resultsHeader = document.getElementById('search-results-header');
@@ -145,7 +148,7 @@ async function searchLinks() {
         
         if (total_count === 0) {
             // Show no results message
-            noResultsMessage.style.display = 'block';
+            noResultsMessage.classList.add('visible');
             noResultsMessage.textContent = 'No matching links found.';
             resultsHeader.style.display = 'none';
         } else {
@@ -380,17 +383,18 @@ function displayExistingLink(link) {
     // Auto-populate search results with this slug and make sure search section is visible
     searchQuery.value = link.slug;
     
-    // Ensure search form is visible
-    const searchForm = document.getElementById('search-form');
+    // Ensure search panel is expanded
+    const searchContent = document.querySelector('.search-content');
     const collapseArrow = document.querySelector('.collapse-arrow');
-    if (searchForm.style.display === 'none') {
-        searchForm.style.display = 'block';
+    
+    if (!searchContent.classList.contains('expanded')) {
+        searchContent.classList.add('expanded');
         collapseArrow.classList.add('expanded');
     }
     
     // Make sure search results container is visible
     const searchResultsContainer = document.getElementById('search-results-container');
-    searchResultsContainer.style.display = 'block';
+    searchResultsContainer.classList.add('visible');
     
     // Clear any previous search results header
     const existingHeader = document.getElementById('search-results-header');

@@ -41,6 +41,7 @@
         }
         table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
             margin-top: 20px;
             border-radius: 4px;
@@ -50,10 +51,19 @@
             text-align: left;
             padding: 12px;
             border-bottom: 1px solid #ddd;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         th {
             background-color: #f2f2f2;
         }
+        /* Column widths */
+        th:nth-child(1), td:nth-child(1) { width: 20%; } /* Slug */
+        th:nth-child(2), td:nth-child(2) { width: 40%; } /* URL */
+        th:nth-child(3), td:nth-child(3) { width: 15%; } /* Username */
+        th:nth-child(4), td:nth-child(4) { width: 15%; } /* Created At */
+        th:nth-child(5), td:nth-child(5) { width: 10%; } /* Actions */
         .error {
             color: red;
             margin-top: 10px;

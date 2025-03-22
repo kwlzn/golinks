@@ -226,12 +226,17 @@ function createLinkRow(link) {
     const dynamicIndicator = link.is_dynamic ? 
         `<span class="dynamic-badge" title="Dynamic link with parameter">Dynamic</span>` : '';
     
+    // Truncate URL if it's too long (>50 chars)
+    const maxUrlLength = 50;
+    const displayUrl = link.url.length > maxUrlLength ? 
+        `${link.url.substring(0, maxUrlLength)}...` : link.url;
+    
     row.innerHTML = `
         <td>
             <a href="/${link.slug}" target="_blank">${link.slug}</a>
             ${dynamicIndicator}
         </td>
-        <td><a href="${link.url}" target="_blank">${link.url}</a></td>
+        <td><a href="${link.url}" target="_blank" title="${link.url}">${displayUrl}</a></td>
         <td>${link.username}</td>
         <td>${formattedDate}</td>
         <td>
@@ -394,7 +399,9 @@ function displayExistingLink(link) {
             </div>
             <div class="link-property">
                 <strong>URL:</strong> 
-                <a href="${link.url}" target="_blank">${link.url}</a>
+                <a href="${link.url}" target="_blank" title="${link.url}">
+                    ${link.url.length > 70 ? `${link.url.substring(0, 70)}...` : link.url}
+                </a>
             </div>
             ${dynamicInfo}
             <div class="link-property">

@@ -1,18 +1,21 @@
+from api.links import router as links_router
+from db.database import get_db, Link
+
+import uvicorn
 from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi.exception_handlers import http_exception_handler
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.exception_handlers import http_exception_handler
-from starlette.exceptions import HTTPException as StarletteHTTPException
-import uvicorn
-from api.links import router as links_router
-from db.database import get_db, Link
 from sqlalchemy.orm import Session
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
 
 app = FastAPI(title="GoLinks")
 app.include_router(links_router, prefix="/_api")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
 
 @app.exception_handler(StarletteHTTPException)
 async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):

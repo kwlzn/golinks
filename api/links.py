@@ -1,11 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
-from sqlalchemy import or_, func
 from db.database import get_db, Link
 from schemas.link import LinkCreate, LinkResponse, LinkSearch
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import or_, func
+from sqlalchemy.orm import Session
 from typing import List, Optional, Dict, Any
 
+
 router = APIRouter()
+
 
 @router.post("/links", response_model=LinkResponse)
 @router.post("/links/", response_model=LinkResponse)

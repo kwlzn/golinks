@@ -60,7 +60,6 @@ async function loadLinks() {
                     ${dynamicIndicator}
                 </td>
                 <td><a href="${link.url}" target="_blank">${link.url}</a></td>
-                <td>${link.username}</td>
                 <td>${formattedDate}</td>
                 <td>
                     <button class="delete-btn" data-slug="${link.slug}" title="Delete this link">🗑️</button>

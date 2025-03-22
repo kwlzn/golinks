@@ -291,12 +291,12 @@ async function createLink() {
     
     // Client-side slug validation
     if (!/^[a-zA-Z0-9]/.test(slug)) {
-        errorMessage.textContent = 'Slug must start with an alphanumeric character.';
+        errorMessage.textContent = 'Name must start with an alphanumeric character.';
         return;
     }
     
     if (!/^[a-zA-Z0-9._\-/]+$/.test(slug)) {
-        errorMessage.textContent = 'Slug can only contain alphanumeric characters, dots, underscores, hyphens, and forward slashes.';
+        errorMessage.textContent = 'Name can only contain alphanumeric characters, dots, underscores, hyphens, and forward slashes.';
         return;
     }
     

@@ -286,18 +286,18 @@
     <div id="create-form">
         <h2>Create a New Link</h2>
         <div class="form-group">
-            <label for="slug">Name:</label>
-            <input type="text" id="slug" placeholder="e.g., docs">
-            <small style="display: block; margin-top: 5px; color: #666;">
-                Must start with a letter or number and can only contain letters, numbers, dots, underscores, hyphens, and forward slashes.
+            <label for="slug">Name</label>
+            <input type="text" id="slug" placeholder="e.g. docs">
+            <small style="display: block; margin-top: 5px; color: #999; font-style: italic;">
+                Must start with a letter or number and can only contain letters, numbers, dots, underscores, hyphens and forward slashes.
             </small>
         </div>
         <div class="form-group">
-            <label for="url">URL:</label>
-            <input type="url" id="url" placeholder="e.g., https://example.com/documentation">
+            <label for="url">URL</label>
+            <input type="url" id="url" placeholder="e.g. https://example.com/documentation">
         </div>
         <div class="form-group">
-            <label for="username">Username:</label>
+            <label for="username">Username</label>
             <input type="text" id="username" placeholder="Your username">
         </div>
         <div class="form-group">
@@ -305,7 +305,7 @@
                 <input type="checkbox" id="is-dynamic">
                 <span>Dynamic Link</span>
             </label>
-            <small style="display: block; margin-top: 5px; color: #666;">
+            <small style="display: block; margin-top: 5px; color: #999; font-style: italic;  text-indent: 26px;">
                 Dynamic links use %s in the URL as a parameter. E.g. x → http://x.com/%s → go/x/NASA → http://x.com/NASA
             </small>
         </div>
@@ -355,7 +355,7 @@
     
     <div id="user-links-section" style="display: none;">
         <h2>Your Links</h2> 
-        <p class="info-text">Top 10 most recently created links.</p>
+        <p class="info-text">Last 10 most recently added links.</p>
         <table id="links-table">
             <thead>
                 <tr>

@@ -149,8 +149,12 @@ async function searchLinks() {
         if (total_count === 0) {
             // Show no results message
             noResultsMessage.classList.add('visible');
-            noResultsMessage.textContent = 'No matching links found.';
-            resultsHeader.style.display = 'none';
+            
+            // Show results header with 0 count
+            resultsHeader.style.display = 'block';
+            resultsHeader.innerHTML = `
+                <div class="results-count">Found <strong>0</strong> matches.</div>
+            `;
         } else {
             // Show results info
             resultsHeader.style.display = 'block';

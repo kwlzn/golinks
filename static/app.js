@@ -2,6 +2,7 @@
 const slugInput = document.getElementById('slug');
 const urlInput = document.getElementById('url');
 const usernameInput = document.getElementById('username');
+const isDynamicCheckbox = document.getElementById('is-dynamic');
 const createBtn = document.getElementById('create-btn');
 const errorMessage = document.getElementById('error-message');
 const linksBody = document.getElementById('links-body');
@@ -48,8 +49,15 @@ async function loadLinks() {
             const createdAt = new Date(link.created_at);
             const formattedDate = createdAt.toLocaleDateString() + ' ' + createdAt.toLocaleTimeString();
             
+            // Add dynamic link indicator if applicable
+            const dynamicIndicator = link.is_dynamic ? 
+                `<span class="dynamic-badge" title="Dynamic link with parameter">Dynamic</span>` : '';
+                
             row.innerHTML = `
-                <td><a href="/${link.slug}" target="_blank">${link.slug}</a></td>
+                <td>
+                    <a href="/${link.slug}" target="_blank">${link.slug}</a>
+                    ${dynamicIndicator}
+                </td>
                 <td><a href="${link.url}" target="_blank">${link.url}</a></td>
                 <td>${link.username}</td>
                 <td>${formattedDate}</td>
@@ -214,8 +222,15 @@ function createLinkRow(link) {
     const createdAt = new Date(link.created_at);
     const formattedDate = createdAt.toLocaleDateString() + ' ' + createdAt.toLocaleTimeString();
     
+    // Add dynamic link indicator if applicable
+    const dynamicIndicator = link.is_dynamic ? 
+        `<span class="dynamic-badge" title="Dynamic link with parameter">Dynamic</span>` : '';
+    
     row.innerHTML = `
-        <td><a href="/${link.slug}" target="_blank">${link.slug}</a></td>
+        <td>
+            <a href="/${link.slug}" target="_blank">${link.slug}</a>
+            ${dynamicIndicator}
+        </td>
         <td><a href="${link.url}" target="_blank">${link.url}</a></td>
         <td>${link.username}</td>
         <td>${formattedDate}</td>
@@ -300,7 +315,15 @@ async function createLink() {
         return;
     }
     
-    const payload = { slug, url, username };
+    const isDynamic = isDynamicCheckbox.checked;
+    
+    // URL validation for dynamic links
+    if (isDynamic && !url.includes('%s')) {
+        errorMessage.textContent = 'Dynamic links must contain a %s placeholder in the URL.';
+        return;
+    }
+    
+    const payload = { slug, url, username, is_dynamic: isDynamic };
     console.log('Sending payload:', payload);
     
     try {
@@ -350,6 +373,19 @@ function displayExistingLink(link) {
     const createdAt = new Date(link.created_at);
     const formattedDate = createdAt.toLocaleDateString() + ' ' + createdAt.toLocaleTimeString();
     
+    // Get dynamic link indicator if applicable
+    const dynamicInfo = link.is_dynamic ? 
+        `<div class="link-property">
+            <strong>Type:</strong> 
+            <span class="dynamic-badge" title="Dynamic link with parameter">Dynamic</span>
+            <small style="margin-left: 10px; color: #666;">
+                Parameters after /${link.slug}/ will replace %s in the URL
+            </small>
+        </div>` : 
+        `<div class="link-property">
+            <strong>Type:</strong> Static
+        </div>`;
+    
     existingLinkDetails.innerHTML = `
         <div class="link-info">
             <div class="link-property">
@@ -360,6 +396,7 @@ function displayExistingLink(link) {
                 <strong>URL:</strong> 
                 <a href="${link.url}" target="_blank">${link.url}</a>
             </div>
+            ${dynamicInfo}
             <div class="link-property">
                 <strong>Created By:</strong> ${link.username}
             </div>
@@ -453,6 +490,35 @@ async function deleteLink(slug) {
         errorMessage.textContent = error.message || 'Error deleting link. Please try again.';
     }
 }
+
+// Add event listener for isDynamicCheckbox to provide URL placeholder guidance
+isDynamicCheckbox.addEventListener('change', function() {
+    if (this.checked && !urlInput.value.includes('%s')) {
+        // Suggest a placeholder URL format if user enables dynamic links
+        if (urlInput.value.length > 0) {
+            // Try to insert %s at a reasonable place in the existing URL
+            const url = new URL(urlInput.value || 'https://example.com');
+            if (!url.pathname || url.pathname === '/') {
+                // No path, append a path with placeholder
+                urlInput.value = urlInput.value.replace(/\/?$/, '/%s');
+            } else {
+                // There's a path, suggest replacing last segment with %s
+                const pathParts = url.pathname.split('/');
+                if (pathParts.length > 1) {
+                    pathParts[pathParts.length - 1] = '%s';
+                    url.pathname = pathParts.join('/');
+                    urlInput.value = url.toString();
+                } else {
+                    // Just append the placeholder
+                    urlInput.value = urlInput.value.replace(/\/?$/, '/%s');
+                }
+            }
+        } else {
+            // If empty, suggest a basic placeholder pattern
+            urlInput.value = 'https://example.com/%s';
+        }
+    }
+});
 
 // Event listeners
 createBtn.addEventListener('click', createLink);

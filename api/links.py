@@ -26,7 +26,8 @@ def create_link(link_data: LinkCreate, db: Session = Depends(get_db)):
     db_link = Link(
         slug=link_data.slug,
         url=link_data.url,
-        username=link_data.username
+        username=link_data.username,
+        is_dynamic=1 if link_data.is_dynamic else 0
     )
     db.add(db_link)
     db.commit()

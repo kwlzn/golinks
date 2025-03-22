@@ -218,6 +218,29 @@
             font-style: italic;
             font-size: 0.9em;
         }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        .dynamic-badge {
+            display: inline-block;
+            background-color: #3949ab;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            vertical-align: middle;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -230,7 +253,7 @@
     <div id="create-form">
         <h2>Create a New Link</h2>
         <div class="form-group">
-            <label for="slug">Slug:</label>
+            <label for="slug">Name:</label>
             <input type="text" id="slug" placeholder="e.g., docs">
             <small style="display: block; margin-top: 5px; color: #666;">
                 Must start with a letter or number and can only contain letters, numbers, dots, underscores, hyphens, and forward slashes.
@@ -244,12 +267,21 @@
             <label for="username">Username:</label>
             <input type="text" id="username" placeholder="Your username">
         </div>
+        <div class="form-group">
+            <label class="checkbox-container">
+                <input type="checkbox" id="is-dynamic">
+                <span>Dynamic Link</span>
+            </label>
+            <small style="display: block; margin-top: 5px; color: #666;">
+                Dynamic links use %s in the URL as a placeholder. E.g. x → http://x.com/%s → go/x/elonmusk → http://x.com/elonmusk
+            </small>
+        </div>
         <button id="create-btn">Create Link</button>
         <div id="error-message" class="error"></div>
     </div>
     
     <div id="existing-link-container" class="notification-container" style="display: none;">
-        <h3>This Link Already Exists</h3>
+        <h3>This name already exists</h3>
         <div id="existing-link-details"></div>
     </div>
     
@@ -272,7 +304,7 @@
                     <table id="search-results-table">
                         <thead>
                             <tr>
-                                <th>Slug</th>
+                                <th>Name</th>
                                 <th>URL</th>
                                 <th>Created By</th>
                                 <th>Created At</th>
@@ -294,7 +326,7 @@
         <table id="links-table">
             <thead>
                 <tr>
-                    <th>Slug</th>
+                    <th>Name</th>
                     <th>URL</th>
                     <th>Username</th>
                     <th>Created At</th>

@@ -7,6 +7,7 @@ class LinkBase(BaseModel):
     slug: str
     url: str
     username: str
+    is_dynamic: bool = False
     
     @field_validator('slug')
     def validate_slug(cls, v):
@@ -18,6 +19,14 @@ class LinkBase(BaseModel):
         if not re.match(r'^[a-zA-Z0-9._\-/]+$', v):
             raise ValueError('Slug can only contain alphanumeric characters, dots, underscores, hyphens, and forward slashes')
         
+        return v
+        
+    @field_validator('url')
+    def validate_url(cls, v, values):
+        # If is_dynamic is True, validate that URL contains %s placeholder
+        if values.data.get('is_dynamic', False) and '%s' not in v:
+            raise ValueError('Dynamic links must contain a %s placeholder in the URL')
+            
         return v
 
 class LinkCreate(LinkBase):

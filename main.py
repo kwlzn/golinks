@@ -45,8 +45,27 @@ async def redirect_to_url(path: str, request: Request, db: Session = Depends(get
     if path.startswith('_') or path.startswith('static/') or path.startswith('api/'):
         raise HTTPException(status_code=404, detail="Link not found")
     
+    # Try exact match first
     slug = path
     link = db.query(Link).filter(Link.slug == slug).first()
+    
+    # If no exact match, try to find a dynamic link
+    if not link and '/' in path:
+        # Split the path into base slug and parameter parts
+        base_slug, param_parts = path.split('/', 1)
+        
+        # Look for a dynamic link with the base slug
+        dynamic_link = db.query(Link).filter(
+            Link.slug == base_slug,
+            Link.is_dynamic == 1
+        ).first()
+        
+        if dynamic_link:
+            # Replace %s in URL with the parameter parts
+            target_url = dynamic_link.url.replace('%s', param_parts)
+            return RedirectResponse(url=target_url, status_code=302)
+    
+    # If no suitable link found, return 404
     if not link:
         raise HTTPException(status_code=404, detail="Link not found")
 

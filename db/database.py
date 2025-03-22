@@ -62,6 +62,7 @@ class Link(Base):
     slug = Column(String, unique=True, index=True, nullable=False)
     url = Column(String, nullable=False)
     username = Column(String, nullable=False)
+    is_dynamic = Column(Integer, default=0, nullable=False)  # 0=static, 1=dynamic with %s placeholder
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     
     # Note: Additional validation for slug format is handled in the API layer

@@ -30,13 +30,16 @@ async def custom_http_exception_handler(request: Request, exc: StarletteHTTPExce
     # For other errors, use the default handler
     return await http_exception_handler(request, exc)
 
+
 @app.get("/")
 async def root():
     return RedirectResponse(url="/links", status_code=302)
 
+
 @app.get("/links", response_class=HTMLResponse)
 async def links_page(request: Request):
     return templates.TemplateResponse("links.html", {"request": request})
+
 
 # This catch-all route must be last and handle multiple path segments
 @app.get("/{path:path}")

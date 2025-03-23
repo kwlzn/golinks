@@ -1,7 +1,9 @@
-from pydantic import BaseModel, HttpUrl, field_validator
+import re
 from datetime import datetime
 from typing import Optional
-import re
+
+from pydantic import BaseModel, HttpUrl, field_validator
+
 
 class LinkBase(BaseModel):
     slug: str
@@ -29,8 +31,10 @@ class LinkBase(BaseModel):
             
         return v
 
+
 class LinkCreate(LinkBase):
     pass
+
 
 class LinkResponse(LinkBase):
     id: int
@@ -39,6 +43,7 @@ class LinkResponse(LinkBase):
     model_config = {
         "from_attributes": True  # Replaces orm_mode in Pydantic v2
     }
+
     
 class LinkSearch(BaseModel):
     query: str

@@ -35,11 +35,13 @@ def create_link(link_data: LinkCreate, db: Session = Depends(get_db)):
     print(f"Link created: {db_link.slug} -> {db_link.url}")
     return db_link
 
+
 @router.get("/links", response_model=List[LinkResponse])
 @router.get("/links/", response_model=List[LinkResponse])
 def get_links(db: Session = Depends(get_db)):
     links = db.query(Link).all()
     return links
+
 
 @router.get("/links/user/{username}", response_model=List[LinkResponse])
 @router.get("/links/user/{username}/", response_model=List[LinkResponse])
@@ -66,6 +68,7 @@ def search_links(query: str = Query(..., description="Search query with * as wil
         "links": limited_links
     }
 
+
 @router.get("/links/{slug:path}", response_model=LinkResponse)
 def get_link(slug: str, db: Session = Depends(get_db)):
     print(f"Looking up slug: {slug}")
@@ -73,6 +76,7 @@ def get_link(slug: str, db: Session = Depends(get_db)):
     if not link:
         raise HTTPException(status_code=404, detail="Link not found")
     return link
+
 
 @router.delete("/links/{slug:path}")
 def delete_link(slug: str, db: Session = Depends(get_db)):

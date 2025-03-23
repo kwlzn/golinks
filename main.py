@@ -71,6 +71,7 @@ async def redirect_to_url(path: str, request: Request, db: Session = Depends(get
 
     return RedirectResponse(url=link.url, status_code=302)
 
+
 if __name__ == "__main__":
     # Direct execution - use uvicorn directly
     # For production or with uv, use the Makefile or run:
